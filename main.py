@@ -37,6 +37,7 @@ def _main() -> None:
 
     run = True
     lastmatrics = startmatrics
+    count = 1
 
     while run:
         matrics = []
@@ -58,10 +59,11 @@ def _main() -> None:
         if matrics == lastmatrics or not (1 in matrics):
             print_array(matrics, leng)
             run = False
-            print("life went extint.")
+            print("life went extint. Your simulation survived "+str(count)+" iterations")
         else:
             print_array(matrics, leng)
             lastmatrics = matrics
+            count += 1
         time.sleep(sleep)
                 
 def getCellsNum(point:int):
