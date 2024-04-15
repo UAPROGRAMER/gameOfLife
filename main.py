@@ -1,5 +1,6 @@
 import time
 import random
+import tkinter as TK
 
 startmatrics = [
     0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
