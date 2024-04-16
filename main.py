@@ -86,6 +86,7 @@ def loop():
     
     if matrics == lastmatrics or not (1 in matrics):
         drawLife()
+        print(matrics, leng)
         print("life went extint. Your simulation survived "+str(ccount)+" iterations.")
         root.destroy()
     else:
@@ -147,9 +148,6 @@ def print_array(array, leng):
 # draw life
 
 def drawLife():
-    global root
-    global canvas
-
     canvas.delete("all")
     x=0
     y=0
