@@ -4,28 +4,10 @@ import math
 
 # var || cons
 
-startmatrics = [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-leng = 20
+startmatrics = []
+
+leng = 0
+
 matrics = []
 lastmatrics = []
 ccount = 1
@@ -33,6 +15,8 @@ sleep = 0
 
 WIDTH=600
 HEIGHT=600
+
+cellsset = set()
 
 # main func
 
@@ -43,9 +27,11 @@ def _main() -> None:
     global ccount
     global sleep
     global canvas
+    global leng
 
     # settings
 
+    leng = int(input("len: "))
     command = input("type: ")
     if command == "random":
         genRandom(leng)
@@ -58,9 +44,10 @@ def _main() -> None:
     root = TK.Tk()
     root.title("game of life")
     root.geometry(str(WIDTH)+"x"+str(HEIGHT))
+    root.resizable(False, False)
 
     canvas = TK.Canvas(root, width=WIDTH,height=HEIGHT)
-    canvas.pack(side="left")
+    canvas.pack(fill="both")
 
     root.after(sleep, loop)
     root.mainloop()
@@ -76,31 +63,32 @@ def loop():
 
     matrics = []
 
-    print()
-
     # testing tiles
 
-    for i in range(len(lastmatrics)):
-        if lastmatrics[i] == 1:
-            if getCellsNum(i) == 2 or getCellsNum(i) == 3:
-                matrics.append(1)
+    getCellsSet()
+    getEmphyMatrics()
+    j = range(len(cellsset))
+
+    for i in j:
+        b = cellsset.pop()
+        if lastmatrics[b] == 1:
+            if getCellsNum(b) == 2 or getCellsNum(b) == 3:
+                matrics[b] = 1
             else:
-                matrics.append(0)
+                matrics[b] = 0
         else:
-            if getCellsNum(i) == 3:
-                matrics.append(1)
+            if getCellsNum(b) == 3:
+                matrics[b] = 1
             else:
-                matrics.append(0)
+                matrics[b] = 0
     
     # testing for end
     
     if matrics == lastmatrics or not (1 in matrics):
-        print_array(matrics, leng)
         drawLife()
         print("life went extint. Your simulation survived "+str(ccount)+" iterations.")
         root.destroy()
     else:
-        print_array(matrics, leng)
         drawLife()
         lastmatrics = matrics
         ccount += 1
@@ -166,18 +154,18 @@ def drawLife():
     x=0
     y=0
     j=0
+    wh=WIDTH/leng
 
-    canvas.create_rectangle(0,0,600,600, outline="#000000", fill="#000000")
+    canvas.create_rectangle(0,0,WIDTH,HEIGHT, outline="#000000", fill="#000000")
 
     for i in range(len(matrics)):
         if matrics[i] == 1:
             j=i
             while j>leng-1:
                 j-=leng
-            x=j*30
-            y=math.floor(i/leng)*30
-            canvas.create_rectangle(x,y,x+30,y+30, outline="#FFFFFF", fill="#FFFFFF")
-
+            x=j*wh
+            y=math.floor(i/leng)*wh
+            canvas.create_rectangle(x,y,x+wh,y+wh, outline="#FFFFFF", fill="#FFFFFF")
 
 # create random cells
 
@@ -186,11 +174,45 @@ def genRandom(len):
     global startmatrics
     startmatrics = []
     for j in range(len*len):
-        i=random.randint(1,3)
+        i=random.randint(1,4)
         if i == 1:
             startmatrics.append(1)
         else:
             startmatrics.append(0)
+
+# getting a cells to check
+
+def getCellsSet():
+    global cellsset
+    cellsset = set()
+    for i in range(len(lastmatrics)):
+        if lastmatrics[i] == 1:
+            j = [
+                i - leng - 1,
+                i - leng,
+                i - leng + 1,
+                i - 1,
+                i,
+                i + 1,
+                i + leng - 1,
+                i + leng,
+                i + leng + 1,
+            ]
+            for k in range(len(j)):
+                if j[k] < 0:
+                    j[k] = j[k] + (leng*leng)
+                elif j[k] > (leng*leng)-1:
+                    j[k] = j[k] - (leng*leng)
+            for k in j:
+                cellsset.add(k)
+
+# getting emphy matrics
+
+def getEmphyMatrics():
+    global matrics
+    matrics = []
+    for i in range(leng*leng):
+        matrics.append(0)
 
 # calling main
 
